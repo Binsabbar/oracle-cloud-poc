@@ -28,8 +28,7 @@ locals {
     "ms-1" = {
       config          = local.instances_configs["config-a"]
       volume_size     = 50
-      autherized_keys = local.jumpbox_autherized_keys
-
+      autherized_keys = local.private_instances_autherized_keys
     }
   }
 }
