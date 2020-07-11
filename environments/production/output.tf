@@ -1,3 +1,3 @@
 output "instances" {
-    value = module.computing.instances_ips
+  value = module.computing.instances_ips
 }
