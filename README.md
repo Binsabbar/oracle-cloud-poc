@@ -45,10 +45,12 @@ To create different environments (prod, uat, dev), it is assumed that they same 
 2. symlink the following: `main.tf`, `variables.tf` and `instance-options.tf` to the new environment directory.
 3. customise the environment as you wish. You probably want to configure the instances you want to create + security groups per environment.
 
- # To dos:
+# Work In Progress (WIP):
+1. Add optional LB for the network on port 443 and 80
+
+# To dos:
 This is WIP example. I am still planning to find a way to:
 1. Mange IAM and policies in an organised way. Probably if I do I will store Terraform state in a different workspace.
-3. Add optional LB for the network on port 443 and 80
 4. Allows for multiple subnets configurations (currently the module will create two only)
 5. Add Internet Gateway for private subnet so they can reach the internet.
 2. Manage DNS records.
