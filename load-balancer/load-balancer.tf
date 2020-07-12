@@ -1,5 +1,5 @@
 resource "oci_load_balancer_load_balancer" "load_balancer" {
-  compartment_id             = var.compartment_id
+  compartment_id             = var.compartment.id
   display_name               = var.name
   subnet_ids                 = var.subnet_ids
   shape                      = var.shape

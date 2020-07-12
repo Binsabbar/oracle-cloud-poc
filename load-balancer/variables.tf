@@ -1,5 +1,5 @@
 # Required
-variable compartment_id {
+variable compartment {
   type = object({
     id = string
   })
@@ -10,28 +10,16 @@ variable name { type = string }
 // Optional
 variable http_configurations {
   type = map(object({
-    virutal_hosts = set(string)
+    virtual_hosts = set(string)
     server_ips    = set(string)
     port          = number
   }))
-  default = {
-    "group-a" = {
-      virutal_hosts = ["abc.com", "*.abc.com"]
-      server_ips = ["1", "2"]
-      port = 80
-    }
-
-    "group-b" = {
-      virutal_hosts = ["example.com"]
-      server_ips = ["3", "4"]
-      port = 80
-    }
-  }
+  default = {}
 }
 
 variable https_configurations {
   type = map(object({
-    virutal_hosts        = set(string)
+    virtual_hosts        = set(string)
     server_ips           = set(string)
     port                 = number
     ssl_certificate_name = string
@@ -41,8 +29,8 @@ variable https_configurations {
 
 variable tcp_configurations {
   type = map(object({
-    server_ips = set(string)
-    port       = number
+    server_ips       = set(string)
+    port             = number
     protocol_version = number
   }))
   default = {}
