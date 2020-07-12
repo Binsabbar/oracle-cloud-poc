@@ -50,3 +50,20 @@ module "computing" {
   availability_domain = data.oci_identity_availability_domain.ad_1
   instances           = local.instances
 }
+
+module "load_balancer" {
+  source = "../../load-balancer"
+
+  # project_name        = local.project_name
+  # environment         = local.environment
+  subnet_ids  = [module.networking.network.public_subnet.id]
+  compartment = module.compartment.compartments[local.compartment]
+  name        = "production load balancer"
+  http_configurations = {
+    "group-a" = {
+      server_ips = ["10.0.0.12"]
+      virtual_hosts = ["example.ecom"]
+      port = 90
+    }
+  }
+}
