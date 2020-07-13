@@ -11,7 +11,7 @@ The basic configuration consists of the following:
 * Two Default Security Groups (They are not applied to instances, you have to pass their IDs): 
     * One allows SSH from safe IPs to public instance.
     * The other allows communication between public and private subnet
-
+* Optional HTTP/S Load Balancer
  
 ## Managing Different Environments
 I have seen multiple approaches when it comes to managing different environments in Terraform. My approach was to create generic modules, then customise each environment
@@ -46,7 +46,6 @@ To create different environments (prod, uat, dev), it is assumed that they same 
 3. customise the environment as you wish. You probably want to configure the instances you want to create + security groups per environment.
 
 # Work In Progress (WIP):
-1. Add optional LB for the network on port 443 and 80
 
 # To dos:
 This is WIP example. I am still planning to find a way to:
