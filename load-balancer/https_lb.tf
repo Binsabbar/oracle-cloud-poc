@@ -1,53 +1,99 @@
-# resource "oci_load_balancer_backend_set" "https_backend_set" {
-#   for_each         = var.https_configurations
+locals {
+  /*
+  [
+    { backend_set = group-a, server_ip = "10.0.0.1", port: 90 }, 
+    { backend_set = group-a, server_ip = "10.0.0.2", port: 90 }, 
+    { backend_set = group-b, server_ip = "10.0.1.1", port: 80 },
+  ]
+  */
+  flattened_https_server_ips = flatten([
+    for backend_set, config in var.https_configurations : [
+      for server_ip in config.server_ips : {
+        backend_set = backend_set
+        server_ip   = server_ip
+        port        = config.port
+      }
+    ]
+  ])
 
-#   load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
-#   name             = each.key
-#   policy           = "LEAST_CONNECTIONS"
-#   health_checker {
-#     protocol          = "HTTP"
-#     port              = each.value.port
-#     interval_ms       = "60000"
-#     retries           = 3
-#     return_code       = 200
-#     timeout_in_millis = 3000
-#     url_path          = "/health"
-#   }
+  /*
+  [
+    {backend_set = group-a, virtual_host = example.com}, 
+    {backend_set = group-a, virtual_host = *.example.com}
+    {backend_set = group-b, virtual_host = abc.com}, 
+    {backend_set = group-b, virtual_host = *.abc.com}
+  ]
+  */
+  flattened_https_virtual_hosts = flatten([
+    for backend_set, config in var.https_configurations : [
+      for virtual_host in config.virtual_hosts : {
+        backend_set  = backend_set
+        virtual_host = virtual_host
+      }
+    ]
+  ])
 
-#   ssl_configuration {
-#     certificate_name        = each.value.ssl_certificate_name
-#     verify_depth            = 3
-#     verify_peer_certificate = true
-#   }
+  /*
+    {
+      "group-a": ["group-a.example.com", "group-a.*.example.com"],
+      "group-b": ["group-b.abc.com", "group-b.*.abc.com"],
+    }
+  */
+  oci_load_balancer_https_hostname_ids = {
+    for backend_set, config in var.https_configurations :
+    "${backend_set}" => [for virtual_host in config.virtual_hosts : "${backend_set}.${virtual_host}"]
+  }
+}
+resource "oci_load_balancer_backend_set" "https_backend_set" {
+  for_each         = var.https_configurations
 
-#   dynamic "backend" {
-#     for_each = each.value.server_ips
+  load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
+  name             = each.key
+  policy           = "LEAST_CONNECTIONS"
+  health_checker {
+    protocol          = "HTTP"
+    port              = each.value.port
+    interval_ms       = "60000"
+    retries           = 3
+    return_code       = 200
+    timeout_in_millis = 3000
+    url_path          = "/health"
+  }
+  ssl_configuration {
+    certificate_name        = each.value.ssl_certificate_name
+    verify_depth            = 3
+    verify_peer_certificate = true
+  }
+}
 
-#     content {
-#       ip_address = backend.value
-#       port       = each.value.port
-#     }
-#   }
-# }
+resource "oci_load_balancer_backend" "https_backend" {
+  for_each = { for v in local.flattened_https_server_ips : "${v.backend_set}.${v.server_ip}" => v }
 
-# resource "oci_load_balancer_hostname" "https_hostnames" {
-#   fore_each = var.virtual_hosts
+  load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
+  backendset_name  = oci_load_balancer_backend_set.https_backend_set[each.value.backend_set].name
+  ip_address       = each.value.server_ip
+  port             = each.value.port
+}
 
-#   load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
-#   hostname         = each.key
-#   name             = each.key
-#   lifecycle {
-#     create_before_destroy = true
-#   }
-# }
 
-# resource "oci_load_balancer_listener" "https_listener" {
-#   fore_each = var.https_configurations
+resource "oci_load_balancer_hostname" "https_hostnames" {
+  for_each = { for v in local.flattened_https_virtual_hosts : "${v.backend_set}.${v.virtual_host}" => v.virtual_host }
+  
+  load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
+  hostname         = each.key
+  name             = each.key
+  lifecycle {
+    create_before_destroy = true
+  }
+}
 
-#   load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
-#   default_backend_set_name = oci_load_balancer_backend_set.backend_set.name
-#   hostname_names           = oci_load_balancer_hostname.http_hostnames[""].name
-#   name           = each.key
-#   port           = each.value.port
-#   protocol       = "HTTPS"
-# }
+resource "oci_load_balancer_listener" "https_listener" {
+  for_each = var.https_configurations
+
+  load_balancer_id         = oci_load_balancer_load_balancer.load_balancer.id
+  default_backend_set_name = oci_load_balancer_backend_set.https_backend_set["${each.key}"].name
+  hostname_names           = [for resource_name in local.oci_load_balancer_https_hostname_ids[each.key] : oci_load_balancer_hostname.https_hostnames[resource_name].name]
+  name                     = each.key
+  port                     = each.value.port
+  protocol                 = "HTTPS"
+}
