@@ -1,4 +1,6 @@
 # Required
+variable project_name { type = string }
+variable environment { type = string }
 variable compartment {
   type = object({
     id = string

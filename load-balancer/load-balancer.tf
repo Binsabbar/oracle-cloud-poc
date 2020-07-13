@@ -5,4 +5,9 @@ resource "oci_load_balancer_load_balancer" "load_balancer" {
   shape                      = var.shape
   is_private                 = var.is_private
   network_security_group_ids = var.security_group_ids
+  freeform_tags = {
+    "project"     = var.project_name
+    "managedby"   = "terraform"
+    "environment" = var.environment
+  }
 }
