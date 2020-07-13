@@ -1,17 +1,17 @@
 locals {
-
   /*
   [
-    {backend_set = group-a, server_ip = "10.0.0.1", port: 90}, 
-    {backend_set = group-a, server_ip = "10.0.0.2", port: 90}, 
-    {backend_set = group-b, server_ip = "10.0.1.1", port: 80}, 
+    { backend_set = group-a, server_ip = "10.0.0.1", port: 90 }, 
+    { backend_set = group-a, server_ip = "10.0.0.2", port: 90 }, 
+    { backend_set = group-b, server_ip = "10.0.1.1", port: 80 },
+  ]
   */
   flattened_server_ips = flatten([
     for backend_set, config in var.http_configurations : [
       for server_ip in config.server_ips : {
-        backend_set  = backend_set
-        server_ip = server_ip
-        port = config.port
+        backend_set = backend_set
+        server_ip   = server_ip
+        port        = config.port
       }
     ]
   ])
@@ -29,11 +29,9 @@ locals {
       for virtual_host in config.virtual_hosts : {
         backend_set  = backend_set
         virtual_host = virtual_host
-
       }
     ]
   ])
-
 
   /*
     {
@@ -66,12 +64,12 @@ resource "oci_load_balancer_backend_set" "http_backend_set" {
 }
 
 resource "oci_load_balancer_backend" "http_backend" {
-    for_each = {for v in local.flattened_server_ips: "${v.backend_set}.${v.server_ip}" => v}
+  for_each = { for v in local.flattened_server_ips : "${v.backend_set}.${v.server_ip}" => v }
 
-    load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
-    backendset_name = oci_load_balancer_backend_set.http_backend_set[each.value.backend_set].name
-    ip_address = each.value.server_ip
-    port = each.value.port
+  load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
+  backendset_name  = oci_load_balancer_backend_set.http_backend_set[each.value.backend_set].name
+  ip_address       = each.value.server_ip
+  port             = each.value.port
 }
 
 resource "oci_load_balancer_hostname" "http_hostnames" {

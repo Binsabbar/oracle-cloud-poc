@@ -53,12 +53,3 @@ variable security_group_ids {
   type    = set(string)
   default = []
 }
-
-/*
-Each load balancer has the following configuration limits:
-One IP address
-16 backend sets
-512 backend servers per backend set
-1024 backend servers total
-16 listeners
-*/
