@@ -1,4 +1,4 @@
-resource "oci_load_balancer_rule_set" "rule_set" {
+/*resource "oci_load_balancer_rule_set" "rule_set" {
   load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
   name             = "Main-ruleSet"
   items {
@@ -10,4 +10,4 @@ resource "oci_load_balancer_rule_set" "rule_set" {
     }
     description = "Allow All IPs"
   }
-}
+}*/

@@ -49,7 +49,7 @@ variable is_private {
 }
 variable shape {
   type    = string
-  default = "10Mbps"
+  default = "100Mbps"
 }
 variable security_group_ids {
   type    = set(string)
