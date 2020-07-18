@@ -6,7 +6,6 @@ variable "compartments" {
   type = map(object({
     root = string
     policies = list(object({
-      action   = string
       verb     = string
       resource = string
       subject  = string

@@ -73,5 +73,5 @@ resource "oci_identity_policy" "policies" {
   compartment_id = each.value.root
   description    = "Managed By Terraform"
   name           = "${each.key}-policy"
-  statements     = [for policy in each.value.policies : "${policy.action} ${policy.subject} to ${policy.verb} ${policy.resource} in compartment ${each.key}"]
+  statements     = [for policy in each.value.policies : "Allow ${policy.subject} to ${policy.verb} ${policy.resource} in compartment ${each.key}"]
 }
