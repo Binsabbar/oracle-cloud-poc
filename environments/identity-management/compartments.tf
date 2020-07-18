@@ -22,9 +22,24 @@ module "root_compartments" {
     "networking-space" = {
       root = var.tenancy_ocid
       policies = [
-        "Allow group ${local.groups.network_admin} to manage virtual-network-family in compartment networking-space",
-        "Allow group ${local.groups.network_admin} to manage instance-family in compartment networking-space",
-        "Allow group ${local.groups.group_a_admin},${local.groups.group_b_admin} to use virtual-network-family in compartment networking-space",
+        {
+          action   = "Allow"
+          subject  = "group ${local.groups.network_admin}"
+          verb     = "manage"
+          resource = "virtual-network-family"
+        },
+        {
+          action   = "Allow"
+          subject  = "group ${local.groups.network_admin}"
+          verb     = "manage"
+          resource = "instance-family"
+        },
+        {
+          action   = "Allow"
+          subject  = "group ${local.groups.group_a_admin},${local.groups.group_b_admin}"
+          verb     = "use"
+          resource = "virtual-network-family"
+        }
       ]
     }
   }
@@ -47,19 +62,34 @@ module "project_compartments" {
     "project-a-space" = {
       root = module.root_compartments.compartments["networking-space"].id
       policies = [
-        "Allow group ${local.groups.group_a_admin} to manage all-resources in compartment project-a-space"
+        {
+          action   = "Allow"
+          subject  = "group ${local.groups.group_a_admin}"
+          verb     = "manage"
+          resource = "all-resources"
+        }
       ]
     },
     "project-b-space" = {
       root = module.root_compartments.compartments["networking-space"].id
       policies = [
-        "Allow group ${local.groups.group_b_admin} to manage all-resources in compartment project-a-space"
+        {
+          action   = "Allow"
+          subject  = "group ${local.groups.group_b_admin}"
+          verb     = "manage"
+          resource = "all-resources"
+        }
       ]
     },
     "project-c-space" = {
       root = module.root_compartments.compartments["networking-space"].id
       policies = [
-        "Allow group ${local.groups.group_c_admin} to manage all-resources in compartment project-a-space"
+        {
+          action   = "Allow"
+          subject  = "group ${local.groups.group_c_admin}"
+          verb     = "manage"
+          resource = "all-resources"
+        }
       ]
     },
   }
