@@ -1,4 +1,4 @@
-resource "oci_identity_compartment" "compartment" {
+resource "oci_identity_compartment" "compartments" {
   for_each       = var.compartments
   name           = each.key
   description    = "compartment that holds PoCs resource using Terraform for prod"
@@ -9,4 +9,5 @@ resource "oci_identity_compartment" "compartment" {
     "environment" = var.environment
     "project"     = var.project_name
   }
+  enable_delete = var.enable_delete
 }
