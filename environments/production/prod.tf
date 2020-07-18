@@ -9,18 +9,6 @@ data "oci_identity_availability_domain" "ad_1" {
   ad_number      = 1
 }
 
-module "compartment" {
-  source = "../../identity"
-
-  project_name = local.project_name
-  environment  = local.environment
-  compartments = {
-    "${local.compartment}" = {
-      root = var.tenancy_ocid
-    }
-  }
-}
-
 module "networking" {
   source = "../../networking"
 
