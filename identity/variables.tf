@@ -4,7 +4,8 @@ variable "tenant_id" { type = string }
 
 variable "compartments" {
   type = map(object({
-    root = string
+    root     = string
+    policies = set(string)
   }))
 }
 
