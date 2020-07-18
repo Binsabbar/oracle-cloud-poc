@@ -13,7 +13,7 @@ variable "enable_delete" {
   default = true
 }
 
-variable "groups" {
-  type = set(string)
-  default = []
+variable "memberships" {
+  type    = map(set(string))
+  default = {}
 }
