@@ -45,7 +45,7 @@ locals {
   }
 }
 resource "oci_load_balancer_backend_set" "https_backend_set" {
-  for_each         = var.https_configurations
+  for_each = var.https_configurations
 
   load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
   name             = each.key
@@ -78,7 +78,7 @@ resource "oci_load_balancer_backend" "https_backend" {
 
 resource "oci_load_balancer_hostname" "https_hostnames" {
   for_each = { for v in local.flattened_https_virtual_hosts : "${v.backend_set}.${v.virtual_host}" => v.virtual_host }
-  
+
   load_balancer_id = oci_load_balancer_load_balancer.load_balancer.id
   hostname         = each.key
   name             = each.key
