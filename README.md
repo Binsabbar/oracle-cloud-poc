@@ -22,18 +22,18 @@ identity/
 computing/
 environments/
   production/
-      main.tf             <--------- (symlink)
+      provider.tf         <--------- (symlink to root main.tf)
       variables.tf        <--------- (symlink)
       instance-options.tf <--------- (symlink)
       configurations.tf.  <--------- using production workspace in Terraform backend
-      prod.tf
+      main.tf
       instances.tf
   uat/
-      main.tf             <--------- (symlink)
+      provider.tf         <--------- (symlink to root main.tf)
       variables.tf        <--------- (symlink)
       instance-options.tf <--------- (symlink)
       configurations.tf.  <--------- using uat workspace in Terraform backend
-      uat.tf
+      main.tf
       instances.tf
 main.tf
 variables.tf
@@ -46,19 +46,17 @@ To create different environments (prod, uat, dev), it is assumed that they same 
 3. customise the environment as you wish. You probably want to configure the instances you want to create + security groups per environment.
 
 # Work In Progress (WIP):
+1. Mange IAM and policies in an organised way. Probably if I do I will store Terraform state in a different workspace.
 
 # To dos:
 This is WIP example. I am still planning to find a way to:
-1. Mange IAM and policies in an organised way. Probably if I do I will store Terraform state in a different workspace.
 4. Allows for multiple subnets configurations (currently the module will create two only)
 5. Add Internet Gateway for private subnet so they can reach the internet.
 2. Manage DNS records.
 
  
-
  Well, that's it. Hope someone will find it useful :D 
 
- 
 
  Cheers!
 
