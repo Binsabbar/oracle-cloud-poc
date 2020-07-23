@@ -53,13 +53,13 @@ module "project_compartments" {
     "project-b-space" = {
       root = module.root_compartments.compartments["networking-space"].id
       policies = [
-        "Allow group ${local.groups.group_b_admin} to manage all-resources in compartment project-a-space"
+        "Allow group ${local.groups.group_b_admin} to manage all-resources in compartment project-b-space"
       ]
     },
     "project-c-space" = {
       root = module.root_compartments.compartments["networking-space"].id
       policies = [
-        "Allow group ${local.groups.group_c_admin} to manage all-resources in compartment project-a-space"
+        "Allow group ${local.groups.group_c_admin} to manage all-resources in compartment project-c-space"
       ]
     },
   }
