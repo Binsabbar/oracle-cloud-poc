@@ -6,10 +6,13 @@ locals {
     user2 = "user2"
   }
   groups = {
-    network_admin = "network-admin"
-    group_a_admin = "group-a-admin"
-    group_b_admin = "group-b-admin"
-    group_c_admin = "group-c-admin"
+    network_admin = "network_admin"
+    a_admin       = "a-admin"
+    a_users       = "a-users"
+    b_admin       = "b-admin"
+    b_users       = "b-users"
+    c_admin       = "c-admin"
+    c_users       = "c-users"
   }
 }
 
@@ -24,16 +27,20 @@ module "root_compartments" {
       policies = [
         "Allow group ${local.groups.network_admin} to manage virtual-network-family in compartment networking-space",
         "Allow group ${local.groups.network_admin} to manage instance-family in compartment networking-space",
-        "Allow group ${local.groups.group_a_admin},${local.groups.group_b_admin} to use virtual-network-family in compartment networking-space",
+        "Allow group ${local.groups.a_admin},${local.groups.b_admin} to use virtual-network-family in compartment networking-space",
       ]
     }
   }
 
   memberships = {
     "${local.groups.network_admin}" = toset([local.users.user1])
-    "${local.groups.group_a_admin}" = toset([local.users.user2])
-    "${local.groups.group_b_admin}" = toset([local.users.user2])
-    "${local.groups.group_c_admin}" = toset([local.users.user1])
+    "${local.groups.a_admin}"       = toset([local.users.user2])
+    "${local.groups.a_admin}"       = toset([])
+    "${local.groups.b_admin}"       = toset([local.users.user2])
+    "${local.groups.c_admin}"       = toset([local.users.user1])
+    "${local.groups.a_users}"       = toset([])
+    "${local.groups.b_users}"       = toset([])
+    "${local.groups.c_users}"       = toset([])
   }
 }
 
@@ -47,19 +54,19 @@ module "project_compartments" {
     "project-a-space" = {
       root_compartment = module.root_compartments.compartments["networking-space"].id
       policies = [
-        "Allow group ${local.groups.group_a_admin} to manage all-resources in compartment project-a-space"
+        "Allow group ${local.groups.a_admin} to manage all-resources in compartment project-a-space"
       ]
     },
     "project-b-space" = {
       root_compartment = module.root_compartments.compartments["networking-space"].id
       policies = [
-        "Allow group ${local.groups.group_b_admin} to manage all-resources in compartment project-b-space"
+        "Allow group ${local.groups.b_admin} to manage all-resources in compartment project-b-space"
       ]
     },
     "project-c-space" = {
       root_compartment = module.root_compartments.compartments["networking-space"].id
       policies = [
-        "Allow group ${local.groups.group_c_admin} to manage all-resources in compartment project-c-space"
+        "Allow group ${local.groups.c_admin} to manage all-resources in compartment project-c-space"
       ]
     },
   }
