@@ -43,12 +43,12 @@ module "root_compartments" {
     "${local.groups.c_users}"       = toset([])
   }
 
-    tenancy_policies = {
+  tenancy_policies = {
     name = "admins"
     policies = [
       "Allow group ${local.groups.a_admin},${local.groups.b_admin},${local.groups.c_admin} to inspect users in tenancy",
       "Allow group ${local.groups.a_admin},${local.groups.b_admin},${local.groups.c_admin} to inspect groups in tenancy",
-      
+
       "Allow group ${local.groups.a_admin} to use users in tenancy where target.group.name='a_users'",
       "Allow group ${local.groups.a_admin} to use groups in tenancy where target.group.name='a_users'",
 
@@ -80,16 +80,16 @@ module "project_compartments" {
       root_compartment = module.root_compartments.compartments["networking-space"].id
       policies = [
         "Allow group ${local.groups.b_admin} to manage all-resources in compartment project-b-space",
-        "Allow group ${local.groups.b_users} to use instance-family in compartment project-a-space",
-        "Allow group ${local.groups.b_users} to use volume-family in compartment project-a-space"
+        "Allow group ${local.groups.b_users} to use instance-family in compartment project-b-space",
+        "Allow group ${local.groups.b_users} to use volume-family in compartment project-b-space"
       ]
     },
     "project-c-space" = {
       root_compartment = module.root_compartments.compartments["networking-space"].id
       policies = [
         "Allow group ${local.groups.c_admin} to manage all-resources in compartment project-c-space",
-        "Allow group ${local.groups.c_users} to use instance-family in compartment project-a-space",
-        "Allow group ${local.groups.c_users} to use volume-family in compartment project-a-space"
+        "Allow group ${local.groups.c_users} to use instance-family in compartment project-c-space",
+        "Allow group ${local.groups.c_users} to use volume-family in compartment project-c-space"
       ]
     },
   }
