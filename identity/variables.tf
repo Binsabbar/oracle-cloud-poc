@@ -4,8 +4,8 @@ variable "tenant_id" { type = string }
 
 variable "compartments" {
   type = map(object({
-    root_compartment     = string
-    policies = set(string)
+    root_compartment = string
+    policies         = set(string)
   }))
 }
 
@@ -17,4 +17,12 @@ variable "enable_delete" {
 variable "memberships" {
   type    = map(set(string))
   default = {}
+}
+
+variable "tenancy_policies" {
+  type = object({
+    name     = string
+    policies = set(string)
+  })
+  default = null
 }

@@ -75,3 +75,12 @@ resource "oci_identity_policy" "policies" {
   name           = "${each.key}-policy"
   statements     = each.value.policies
 }
+
+resource "oci_identity_policy" "tenancy_policies" {
+  for_each = var.tenancy_policies != null ? { "${var.tenancy_policies.name}" = var.tenancy_policies.policies } : {}
+
+  compartment_id = var.tenant_id
+  description    = "Managed By Terraform"
+  name           = each.key
+  statements     = each.value
+}
