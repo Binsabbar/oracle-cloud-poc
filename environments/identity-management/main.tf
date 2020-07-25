@@ -2,8 +2,11 @@ locals {
   project_name = "demo-oracle-cloud"
   environment  = "production"
   users = {
-    user1 = "user1"
-    user2 = "user2"
+    user1 = "mike"
+    user2 = "sara"
+    admin-a = "john"
+    admin-b = "alice"
+    network-admin-1 = "alex"
   }
   groups = {
     network_admin = "network_admin"
@@ -34,12 +37,12 @@ module "root_compartments" {
   }
 
   memberships = {
-    "${local.groups.network_admin}" = toset([local.users.user1])
-    "${local.groups.a_admin}"       = toset([local.users.user2])
-    "${local.groups.b_admin}"       = toset([local.users.user2])
-    "${local.groups.c_admin}"       = toset([local.users.user1])
-    "${local.groups.a_users}"       = toset([])
-    "${local.groups.b_users}"       = toset([])
+    "${local.groups.network_admin}" = toset([local.users["network-admin-1"]])
+    "${local.groups.a_admin}"       = toset([local.users["admin-a"]])
+    "${local.groups.b_admin}"       = toset([local.users["admin-b"]])
+    "${local.groups.c_admin}"       = toset([])
+    "${local.groups.a_users}"       = toset([local.users["user1"]])
+    "${local.groups.b_users}"       = toset([local.users["user2"]])
     "${local.groups.c_users}"       = toset([])
   }
 
