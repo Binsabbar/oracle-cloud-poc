@@ -20,7 +20,7 @@ resource "oci_identity_compartment" "compartments" {
   for_each       = var.compartments
   name           = each.key
   description    = "compartment that holds PoCs resource using Terraform for prod"
-  compartment_id = each.value.root
+  compartment_id = each.value.root_compartment
   freeform_tags = {
     "type"        = "identity"
     "managedby"   = "terraform"
@@ -70,7 +70,7 @@ resource "oci_identity_user_group_membership" "user_group_membership" {
 resource "oci_identity_policy" "policies" {
   for_each = { for compartment, config in var.compartments : compartment => config if length(config.policies) > 0 }
 
-  compartment_id = each.value.root
+  compartment_id = each.value.root_compartment
   description    = "Managed By Terraform"
   name           = "${each.key}-policy"
   statements     = each.value.policies

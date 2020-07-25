@@ -20,7 +20,7 @@ module "root_compartments" {
   tenant_id    = var.tenancy_ocid
   compartments = {
     "networking-space" = {
-      root = var.tenancy_ocid
+      root_compartment = var.tenancy_ocid
       policies = [
         "Allow group ${local.groups.network_admin} to manage virtual-network-family in compartment networking-space",
         "Allow group ${local.groups.network_admin} to manage instance-family in compartment networking-space",
@@ -45,19 +45,19 @@ module "project_compartments" {
 
   compartments = {
     "project-a-space" = {
-      root = module.root_compartments.compartments["networking-space"].id
+      root_compartment = module.root_compartments.compartments["networking-space"].id
       policies = [
         "Allow group ${local.groups.group_a_admin} to manage all-resources in compartment project-a-space"
       ]
     },
     "project-b-space" = {
-      root = module.root_compartments.compartments["networking-space"].id
+      root_compartment = module.root_compartments.compartments["networking-space"].id
       policies = [
         "Allow group ${local.groups.group_b_admin} to manage all-resources in compartment project-b-space"
       ]
     },
     "project-c-space" = {
-      root = module.root_compartments.compartments["networking-space"].id
+      root_compartment = module.root_compartments.compartments["networking-space"].id
       policies = [
         "Allow group ${local.groups.group_c_admin} to manage all-resources in compartment project-c-space"
       ]
