@@ -14,6 +14,8 @@ locals {
       }
     ]
   ])
+
+  groups = [for group in keys(var.memberships) : oci_identity_group.groups[group]]
 }
 
 resource "oci_identity_compartment" "compartments" {
@@ -46,14 +48,14 @@ resource "oci_identity_group" "groups" {
 }
 
 resource "oci_identity_user" "users" {
-  for_each = toset(flatten([for group, members in var.memberships : members]))
+  for_each = toset(flatten(values(var.memberships)))
 
   compartment_id = var.tenant_id
   description    = each.key
   name           = each.key
 
   freeform_tags = {
-    "type"        = "identity groups"
+    "type"        = "identity users"
     "managedby"   = "terraform"
     "environment" = var.environment
     "project"     = var.project_name
@@ -70,10 +72,12 @@ resource "oci_identity_user_group_membership" "user_group_membership" {
 resource "oci_identity_policy" "policies" {
   for_each = { for compartment, config in var.compartments : compartment => config if length(config.policies) > 0 }
 
-  compartment_id = each.value.root_compartment
+  compartment_id = oci_identity_compartment.compartments[each.key].id
   description    = "Managed By Terraform"
   name           = "${each.key}-policy"
   statements     = each.value.policies
+
+  depends_on = [local.groups]
 }
 
 resource "oci_identity_policy" "tenancy_policies" {
@@ -83,4 +87,6 @@ resource "oci_identity_policy" "tenancy_policies" {
   description    = "Managed By Terraform"
   name           = each.key
   statements     = each.value
+
+  depends_on = [local.groups]
 }
