@@ -51,9 +51,9 @@ To create different environments (prod, uat, dev), it is assumed that they same 
 # To dos:
 This is WIP example. I am still planning to find a way to:
 
-1. Allows for multiple subnets configurations (currently the module will create two only)
-5. Add Internet Gateway for private subnet so they can reach the internet.
-2. Manage DNS records.
+- [ ] Allows for multiple subnets configurations (currently the module will create two only)
+- [ ] Add Internet Gateway for private subnet so they can reach the internet.
+- [ ] Manage DNS records.
 
  
  Well, that's it. Hope someone will find it useful :D 
